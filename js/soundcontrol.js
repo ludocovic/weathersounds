@@ -37,27 +37,28 @@ cloudeffect.gain(cloudgain)
 
 let envelopes = {};
 
+
 function playSound(ton) {
   const env = new p5.Env();
   env.setADSR(0.2,0.1,0.3,2.5);
-  env.setRange(0.5, 0);
+  env.setRange(0.1, 0);
 
-  osc = new p5.Oscillator();
+  const osc = new p5.Oscillator();
   osc.amp(env);
-  midiTon = midiToFreq(ton)
+  midiTon = midiToFreq(ton);
   osc.freq(midiTon);
   osc.start();
   env.triggerAttack()
 
   envelopes[ton] = env;
 
-  return false;
+  //return false;
   //rainFader.triggerAttack()
 }
 function stopSound(ton){
 envelopes[ton].triggerRelease();
   //rainFader.triggerRelease();
-return false;
+//return false;
 }
 
 function inRange(x, min, max) {

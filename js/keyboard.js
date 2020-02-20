@@ -1,6 +1,8 @@
 
 
 function mapKeyToTon(key) {
+  let ton = 47;
+
   if(key==="A"){
     ton = 48
   } else if(key==="W"){
@@ -37,14 +39,14 @@ function mapKeyToTon(key) {
     ton = 64;
   } else if(key==="Ä"){
     ton = 65;
-  } else {
-    ton = 11;
   }
 
   return ton;
 }
 
+
 function keyPressed() {
+  var ton23 = ;
   playSound(mapKeyToTon(key));
   return false
 };
