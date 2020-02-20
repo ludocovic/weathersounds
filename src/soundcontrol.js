@@ -37,8 +37,7 @@ cloudeffect.gain(cloudgain)
 
 let envelopes = {};
 
-
-function playSound(ton) {
+export function playSound(ton) {
   const env = new p5.Env();
   env.setADSR(0.2,0.1,0.3,2.5);
   env.setRange(0.1, 0);
@@ -55,8 +54,9 @@ function playSound(ton) {
   //return false;
   //rainFader.triggerAttack()
 }
-function stopSound(ton){
-envelopes[ton].triggerRelease();
+
+export function stopSound(ton) {
+    envelopes[ton].triggerRelease();
   //rainFader.triggerRelease();
 //return false;
 }

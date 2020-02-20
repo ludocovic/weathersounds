@@ -1,6 +1,4 @@
-
-
-function mapKeyToTon(key) {
+export function mapKeyToTon(key) {
   let ton = 47;
 
   if(key==="A"){
@@ -44,13 +42,11 @@ function mapKeyToTon(key) {
   return ton;
 }
 
-
-function keyPressed() {
-  var ton23 = ;
+export function keyPressed() {
   playSound(mapKeyToTon(key));
   return false
 };
 
-function keyReleased() {
+export function keyReleased() {
   stopSound(mapKeyToTon(key))
 }

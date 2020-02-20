@@ -1,4 +1,4 @@
-var concap = {
+export default {
    "type":"FeatureCollection",
    "features":[
       {

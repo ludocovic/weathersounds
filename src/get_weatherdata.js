@@ -4,7 +4,7 @@ var weatherCon;
 
 
 
-function getData(data){
+export function getData(data){
     markers.on("click", function (data){
     let latT = this.feature.properties.Latitude
     let lngT = this.feature.properties.Longitude
