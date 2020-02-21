@@ -9,3 +9,10 @@
 canvas {
     margin: auto;
 }
+
+.marker {
+  background-image: url('../img/play-button.png');
+  background-size: cover;
+  width: 15px;
+  height: 15px;
+}
