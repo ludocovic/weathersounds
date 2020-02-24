@@ -46,121 +46,53 @@ const bounds = [
 
 
 
-    soundMap.on(
-      'load',
-      function() {
-        soundMap.addSource(
-          'points',
-          {
-            'type': 'geojson',
-            'data': concap
-          }
-        )
-      }
-    );
+    soundMap.on('load', function() {
+      soundMap.addSource(
+        'points',
+        {
+          'type': 'geojson',
+          'data': concap
+        }
+      )
+    });
 
     concap.features.forEach(
       function(marker) {
         // create a DOM element for the marker
         var el = document.createElement('div');
         el.className = 'marker';
-          // el.style.width = marker.properties.iconSize[20] + 'px';
-          // el.style.height = marker.properties.iconSize[20] + 'px';
-
-          // el.addEventListener('click', function() {
-          // window.alert(marker.properties.message);
         new mapboxgl.Marker(el)
           .setLngLat(marker.geometry.coordinates)
-          .addTo(soundMap);
+          .addTo(soundMap)
+    });
+
+
+
+    document.addEventListener('mousedown', function(event) {
+      if (event.target.classList.contains("marker")) {
+        resizeMarker(event.target, true);
       }
-    );
+    });
+    soundMap.on('mouseup', function() {
+      resizeAllMarkersByZoomLevel(soundMap);
+    });
 
 
-    soundMap.on("zoom", function() {
-      const diameter = (15*(soundMap.getZoom()-1)) + 'px';
-      let markers = document.getElementsByClassName('marker');
-      console.log(markers);
-      for (let marker of markers)
-                    {
-                     marker.style.height = diameter;
-                     marker.style.width = diameter;
-                 }
-               });
+      // const markers = document.getElementsByClassName('marker')
+      // for (let marker of markers) {
+      //   marker.on('mousedown', function(event) {
+      //     resizeMarker(event.target, true);
+      //   })
+      //   marker.on('mouseup', function(event) {
+      //     resizeMarker(event.target, false);
+      //   })
+      // };
 
 
-    // document.getElementsByClassName('marker').forEach(
-    //           () => {
-    //               let newZoomLevel
-    //               const diameter = 'calculation'; // replace this
-    //               marker.style.height = diameter;
-    //               marker.style.width = diameter;
-    //           }
-    //       );
-        // let mapId = sketch.createDiv();
-        // mapId.id("mapid");
-        // mapId.size(sketch.windowWidth, sketch.windowHeight-200);
-        // mapId.position(0, 0)
-        // let mymap = L.map('mapid', {
-        //     preferCanvas: true,
-        //     maxZoom: 18,
-        //     minZoom: 3,
-        //     zoomSnap: 0.5
-        // }).setView([0, 0], 2.5)
-        // mymap.doubleClickZoom.disable();
-        // //Loading tiles from mapbox
-        // var customTiles = L.mapboxGL({
-        //     attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
-        //     accessToken: 'pk.eyJ1Ijoib3NrYXItcXVpcmluLWthY2tlYmFydCIsImEiOiJjazV4b2EyM2UyMWdtM2VtbG0wdzFvM2p2In0.SrMgYWTBUYDq3f703br1aQ',
-        //     style: 'https://api.maptiler.com/maps/c23fe784-9f8d-40de-82e4-0238451aa38c/style.json?key=f4Vpi9EErFczVwoJ8sDW'
-        // }).addTo(mymap);
-        //
-        // //  id: 'mapbox/streets-v11',
-        // let southWest = L.latLng(-89.98155760646617, -180),
-        // northEast = L.latLng(89.99346179538875, 180);
-        // let bounds = L.latLngBounds(southWest, northEast);
-        // mymap.setMaxBounds(bounds);
-        // mymap.on('drag', function() {
-        //     mymap.panInsideBounds(bounds, { animate: false });
-        // });
-        //
-        // let playButton = new L.icon({
-        //     iconUrl: 'img/play-button.png',
-        //     iconSize:     [15, 15], // size of the icon
-        //     popupAnchor:  [-3, -76],  // point from which the popup should open relative to the iconAnchor
-        // });
-        //
-        //
-        //
-        // let markers = L.geoJson(concap, {
-        //     pointToLayer: function (concap, latlng) {
-        //         return L.marker(latlng, {
-        //             icon: playButton,
-        //             riseOnHover: true
-        //         })
-        //     },
-        //     bubblingMouseEvents : false,
-        //     //onEachFeature: getData(data)
-        // }).addTo(soundMap);
-
-        /*zoomLevel = mymap.getZoom();
-        m *ymap.on("zoomend", function() {
-        newZoomLevel = mymap.getZoom();
-        if (newZoomLevel>zoomLevel){
-            icSize = icSize + ((newZoomLevel-zoomLevel)*5)
-            markers.removeFrom(mymap)
-            zoomLevel = newZoomLevel;
-            playButton.options.iconSize = [icSize,icSize]
-            markers.addTo(mymap);
-    }
-    if (newZoomLevel<zoomLevel){
-        icSize = icSize - ((zoomLevel-newZoomLevel)*5)
-        markers.removeFrom(mymap)
-        zoomLevel = newZoomLevel;
-        playButton.options.iconSize = [icSize,icSize]
-        markers.addTo(mymap);
-    }
-    });*/
-    };
+  soundMap.on("zoom", function() {
+    resizeAllMarkersByZoomLevel(soundMap);
+  });
+}
 
     sketch.draw = () => {
         //sketch.background(0);
@@ -169,7 +101,24 @@ const bounds = [
 
 
 function touchStarted() {
-    if (getAudioContext().state !== 'running') {
-        getAudioContext().resume();
-    }
+  if (getAudioContext().state !== 'running') {
+      getAudioContext().resume();
+  }
+}
+
+function resizeMarker(marker, shouldMakeSmaller) {
+  const resizeFactor = 0.8;
+  const currentSize = parseInt(marker.computedStyleMap().get("height"));
+  const newSize = shouldMakeSmaller ? currentSize * resizeFactor : currentSize / resizeFactor;
+  marker.style.height = (newSize) + "px";
+  marker.style.width = (newSize) + "px";
+}
+
+function resizeAllMarkersByZoomLevel(soundMap) {
+  const diameter = (15*(soundMap.getZoom()-1)) + 'px';
+  let markers = document.getElementsByClassName('marker');
+  for (let marker of markers) {
+     marker.style.height = diameter;
+     marker.style.width = diameter;
+  }
 }
