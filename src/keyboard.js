@@ -1,52 +1,52 @@
-export function mapKeyToTon(key) {
-  let ton = 47;
+import { playSound, setSelectedOctave, stopSound } from './soundcontrol.js';
 
-  if(key==="A"){
-    ton = 48
-  } else if(key==="W"){
-    ton = 49
-  } else if(key==="S"){
-    ton = 50;
-  } else if(key==="E"){
-    ton = 51
-  } else if(key==="D"){
-    ton = 52;
-  } else if(key==="F"){
-    ton = 53;
-  } else if(key==="T"){
-    ton = 54;
-  } else if(key==="G"){
-    ton = 55;
-  } else if(key==="Z"){
-    ton = 56;
-  } else if(key==="H"){
-    ton = 57;
-  } else if(key==="U"){
-    ton = 58;
-  } else if(key==="J"){
-    ton = 59;
-  } else if(key==="K"){
-    ton = 60;
-  } else if(key==="O"){
-    ton = 61;
-  } else if(key==="L"){
-    ton = 62;
-  } else if(key==="P"){
-    ton = 63;
-  } else if(key==="Ö"){
-    ton = 64;
-  } else if(key==="Ä"){
-    ton = 65;
-  }
-
-  return ton;
-}
-
-export function keyPressed() {
-  playSound(mapKeyToTon(key));
-  return false
+const KeyToMidiOctaveBaseValueMap = {
+  'a': 12,
+  'w': 13,
+  's': 14,
+  'e': 15,
+  'd': 16,
+  'f': 17,
+  't': 18,
+  'g': 19,
+  'z': 20,
+  'h': 21,
+  'u': 22,
+  'j': 23,
 };
 
-export function keyReleased() {
-  stopSound(mapKeyToTon(key))
+const validOctaves = ['1', '2', '3', '4', '5', '6', '7',]
+
+export function mapKeyToMidiValue(key, octave) {
+  key = key.toLowerCase();
+
+  if (!KeyToMidiOctaveBaseValueMap.hasOwnProperty(key)) {
+    return 0;
+  }
+
+  const baseMidiValue = KeyToMidiOctaveBaseValueMap[key];
+
+  return baseMidiValue +(12 * octave);
+}
+
+export function mapKeyToOctave(key) {
+  if (validOctaves.includes(key)) {
+    return parseInt(key);
+  }
+
+  return 0;
+}
+
+export function initializeKeyboard(p5Instance) {
+  p5Instance.keyPressed = function() {
+    const selectedOctave = mapKeyToOctave(p5Instance.key);
+    if (selectedOctave != 0) {
+      setSelectedOctave(mapKeyToOctave(p5Instance.key));
+    }
+    playSound(p5Instance.key);
+  };
+
+  p5Instance.keyReleased = function() {
+    stopSound(p5Instance.key);
+  };
 }

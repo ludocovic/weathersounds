@@ -8,17 +8,9 @@ import concap from './concap.js';
 
 import { getData } from './get_weatherdata.js';
 
-import mapKeyToTon from './keyboard.js';
-import keyPressed from './keyboard.js';
-import keyReleased from './keyboard.js';
-
-import playSound from './soundcontrol.js';
-import stopSound from './soundcontrol.js';
+import {initializeKeyboard, mapKeyToTon }  from './keyboard.js';
 
 import './css/style.css';
-
-
-var api = "http://api.openweathermap.org/data/2.5/weather?", latQuery = "lat=", lngQuery = "&lon=", lat = 0, lon = 0, unitsFormat = "&units=metric", apiKey = "&APPID=12017341921d23d6cf61feb2c3143682";
 
 let p5Instance = new p5(( sketch ) => {
   sketch.setup = () => {
@@ -99,6 +91,7 @@ const bounds = [
     };
 });
 
+initializeKeyboard(p5Instance);
 
 function touchStarted() {
   if (getAudioContext().state !== 'running') {

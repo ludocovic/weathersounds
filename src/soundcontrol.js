@@ -1,4 +1,7 @@
-var rainLevel;
+import 'p5/lib/addons/p5.sound';
+import p5 from 'p5';
+
+import { mapKeyToMidiValue, mapKeyToOctave } from './keyboard.js'
 
 /*function playSound(e){
   markers = e.target
@@ -35,28 +38,42 @@ cloudeffect.gain(cloudgain)
 }
 }*/
 
+const midiToFreq = p5.prototype.midiToFreq;
+
 let envelopes = {};
 
-export function playSound(ton) {
+let selectedOctave = 5;
+
+export function setSelectedOctave(octaveValue) {
+  console.log("selectedOctave: " + octaveValue);
+  selectedOctave = octaveValue;
+}
+
+export function playSound(key) {
+  console.log('playSound');
   const env = new p5.Env();
   env.setADSR(0.2,0.1,0.3,2.5);
   env.setRange(0.1, 0);
 
   const osc = new p5.Oscillator();
   osc.amp(env);
-  midiTon = midiToFreq(ton);
-  osc.freq(midiTon);
+  const freq = midiToFreq(
+    mapKeyToMidiValue(key, selectedOctave)
+  );
+  console.log('playSound freq: ' + freq);
+  osc.freq(freq);
   osc.start();
-  env.triggerAttack()
 
-  envelopes[ton] = env;
+  env.triggerAttack();
+
+  envelopes[key] = env;
 
   //return false;
   //rainFader.triggerAttack()
 }
 
-export function stopSound(ton) {
-    envelopes[ton].triggerRelease();
+export function stopSound(key) {
+    envelopes[key].triggerRelease();
   //rainFader.triggerRelease();
 //return false;
 }
